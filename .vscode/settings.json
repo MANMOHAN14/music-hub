@@ -1,0 +1,4 @@
+{
+  "rust-analyzer.cargo.features": ["all"],
+  "files.exclude": { "target": true, "node_modules": true }
+}
