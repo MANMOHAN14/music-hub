@@ -8,7 +8,7 @@ pub struct Blob {
     pub id: Uuid,
     pub commit_id: Uuid,
     pub file_path: String,
-    pub content: Vec<u8>,
+    pub ipfs_cid: String, // NEW field
 }
 
 #[derive(Debug, Insertable, Deserialize)]
@@ -16,5 +16,6 @@ pub struct Blob {
 pub struct NewBlob {
     pub commit_id: Uuid,
     pub file_path: String,
-    pub content: Vec<u8>,
+    pub ipfs_cid: String, // NEW field
 }
+
