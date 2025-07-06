@@ -66,4 +66,39 @@ export const commentsAPI = {
     api.delete(`/comments/${commentId}`),
 }
 
+// NFTs API
+export const nftsAPI = {
+  getAll: () => api.get('/nfts'),
+  getById: (id: string) => api.get(`/nfts/${id}`),
+  getByProject: (projectId: string) => api.get(`/projects/${projectId}/nfts`),
+  create: (data: {
+    project_id: string;
+    title: string;
+    description?: string;
+    price?: number;
+    royalty_percentage: number;
+  }) => api.post('/nfts', data),
+  mint: (id: string, data: { contract_address: string; token_id: string }) =>
+    api.put(`/nfts/${id}/mint`, data),
+  list: (id: string, data: { price: number }) =>
+    api.put(`/nfts/${id}/list`, data),
+}
+
+// Collaborations API
+export const collaborationsAPI = {
+  getByProject: (projectId: string) =>
+    api.get(`/projects/${projectId}/collaborations`),
+  add: (projectId: string, data: {
+    user_email: string;
+    contribution_percentage: number;
+    role: string;
+  }) => api.post(`/projects/${projectId}/collaborations`, data),
+  remove: (projectId: string, collaborationId: string) =>
+    api.delete(`/projects/${projectId}/collaborations/${collaborationId}`),
+  update: (projectId: string, collaborationId: string, data: {
+    contribution_percentage?: number;
+    role?: string;
+  }) => api.put(`/projects/${projectId}/collaborations/${collaborationId}`, data),
+}
+
 export default api

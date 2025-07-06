@@ -8,6 +8,7 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', auth: true },
   { name: 'Projects', href: '/projects', auth: true },
   { name: 'Studio', href: '/studio', auth: true },
+  { name: 'Marketplace', href: '/marketplace', auth: false },
 ]
 
 function classNames(...classes: string[]) {
@@ -39,9 +40,10 @@ const Navbar: React.FC = () => {
                     <span className="text-xl font-bold text-gray-900">NFTune</span>
                   </Link>
                 </div>
-                {user && (
-                  <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                    {navigation.map((item) => (
+                <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                  {navigation.map((item) => {
+                    if (item.auth && !user) return null
+                    return (
                       <Link
                         key={item.name}
                         to={item.href}
@@ -54,9 +56,9 @@ const Navbar: React.FC = () => {
                       >
                         {item.name}
                       </Link>
-                    ))}
-                  </div>
-                )}
+                    )
+                  })}
+                </div>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:items-center">
                 {user ? (
@@ -146,21 +148,24 @@ const Navbar: React.FC = () => {
 
           <Disclosure.Panel className="sm:hidden">
             <div className="pt-2 pb-3 space-y-1">
-              {user && navigation.map((item) => (
-                <Disclosure.Button
-                  key={item.name}
-                  as={Link}
-                  to={item.href}
-                  className={classNames(
-                    location.pathname === item.href
-                      ? 'bg-primary-50 border-primary-500 text-primary-700'
-                      : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
-                    'block pl-3 pr-4 py-2 border-l-4 text-base font-medium'
-                  )}
-                >
-                  {item.name}
-                </Disclosure.Button>
-              ))}
+              {navigation.map((item) => {
+                if (item.auth && !user) return null
+                return (
+                  <Disclosure.Button
+                    key={item.name}
+                    as={Link}
+                    to={item.href}
+                    className={classNames(
+                      location.pathname === item.href
+                        ? 'bg-primary-50 border-primary-500 text-primary-700'
+                        : 'border-transparent text-gray-600 hover:bg-gray-50 hover:border-gray-300 hover:text-gray-800',
+                      'block pl-3 pr-4 py-2 border-l-4 text-base font-medium'
+                    )}
+                  >
+                    {item.name}
+                  </Disclosure.Button>
+                )
+              })}
             </div>
             {user ? (
               <div className="pt-4 pb-3 border-t border-gray-200">

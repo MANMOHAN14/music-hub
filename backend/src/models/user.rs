@@ -10,10 +10,11 @@ pub struct User {
     pub password_hash: String,
     pub name: Option<String>,
     pub avatar_url: Option<String>,
+    pub created_at: chrono::NaiveDateTime,
 }
 
 #[derive(Debug, Insertable, Deserialize)]
-#[table_name = "users"]
+#[diesel(table_name = users)]
 pub struct NewUser {
     pub email: String,
     pub password_hash: String,

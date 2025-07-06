@@ -10,6 +10,8 @@ import Studio from './pages/Studio'
 import Profile from './pages/Profile'
 import Login from './pages/Login'
 import Register from './pages/Register'
+import NFTMarketplace from './pages/NFTMarketplace'
+import CreateNFT from './pages/CreateNFT'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
@@ -22,6 +24,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/marketplace" element={<NFTMarketplace />} />
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
@@ -35,6 +38,11 @@ function App() {
             <Route path="/projects/:id" element={
               <ProtectedRoute>
                 <ProjectDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/projects/:projectId/nft/create" element={
+              <ProtectedRoute>
+                <CreateNFT />
               </ProtectedRoute>
             } />
             <Route path="/studio/:id?" element={

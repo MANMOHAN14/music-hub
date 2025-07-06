@@ -32,6 +32,8 @@ async fn main() -> std::io::Result<()> {
             .configure(commit_routes)
             .configure(audio_routes)
             .configure(comment_routes)
+            .configure(nft_routes)
+            .configure(collaboration_routes)
     })
     .bind(("127.0.0.1", 8080))?
     .run()

@@ -10,10 +10,11 @@ pub struct Project {
     pub name: String,
     pub description: Option<String>,
     pub created_at: chrono::NaiveDateTime,
+    pub updated_at: chrono::NaiveDateTime,
 }
 
 #[derive(Debug, Insertable, Deserialize)]
-#[table_name = "projects"]
+#[diesel(table_name = projects)]
 pub struct NewProject {
     pub owner_id: Uuid,
     pub name: String,
