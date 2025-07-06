@@ -3,11 +3,12 @@
   "canisters": {
     "nftune_backend": {
       "type": "rust",
-      "package": "nftune_backend"
+      "package": "nftune_backend",
+      "candid": "src/nftune_backend/nftune_backend.did"
     },
     "nftune_frontend": {
       "type": "assets",
-      "source": ["frontend/dist"]
+      "source": ["frontend"]
     },
     "internet_identity": {
       "type": "pull",
