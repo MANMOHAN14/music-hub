@@ -1,20 +1,15 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { authAPI } from '../services/api'
-
-interface User {
-  id: string
-  email: string
-  name?: string
-  avatar_url?: string
-}
+import { Principal } from '@dfinity/principal'
+import { icpService, User } from '../services/icp'
 
 interface AuthContextType {
   user: User | null
-  token: string | null
-  login: (email: string, password: string) => Promise<void>
-  register: (email: string, password: string, name?: string) => Promise<void>
-  logout: () => void
+  principal: Principal | null
+  login: () => Promise<boolean>
+  register: (name: string, email: string) => Promise<void>
+  logout: () => Promise<void>
   loading: boolean
+  isAuthenticated: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -33,67 +28,104 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
-  const [token, setToken] = useState<string | null>(null)
+  const [principal, setPrincipal] = useState<Principal | null>(null)
   const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('token')
-    const storedUser = localStorage.getItem('user')
-    
-    if (storedToken && storedUser) {
-      setToken(storedToken)
-      setUser(JSON.parse(storedUser))
-    }
-    
-    setLoading(false)
+    initAuth()
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const initAuth = async () => {
     try {
-      const response = await authAPI.login(email, password)
-      const { token: newToken, user: userData } = response.data
+      await icpService.init()
+      const authenticated = await icpService.isAuthenticated()
       
-      setToken(newToken)
-      setUser(userData)
-      
-      localStorage.setItem('token', newToken)
-      localStorage.setItem('user', JSON.stringify(userData))
+      if (authenticated) {
+        const userPrincipal = icpService.getPrincipal()
+        if (userPrincipal) {
+          setPrincipal(userPrincipal)
+          setIsAuthenticated(true)
+          
+          try {
+            const userData = await icpService.getUser()
+            setUser(userData)
+          } catch (error) {
+            console.log('User not registered yet')
+          }
+        }
+      }
     } catch (error) {
-      throw error
+      console.error('Auth initialization error:', error)
+    } finally {
+      setLoading(false)
     }
   }
 
-  const register = async (email: string, password: string, name?: string) => {
+  const login = async (): Promise<boolean> => {
     try {
-      const response = await authAPI.register(email, password, name)
-      const { token: newToken, userId } = response.data
+      setLoading(true)
+      const success = await icpService.login()
       
-      const userData = { id: userId, email, name }
+      if (success) {
+        const userPrincipal = icpService.getPrincipal()
+        if (userPrincipal) {
+          setPrincipal(userPrincipal)
+          setIsAuthenticated(true)
+          
+          try {
+            const userData = await icpService.getUser()
+            setUser(userData)
+          } catch (error) {
+            console.log('User not registered yet')
+          }
+        }
+      }
       
-      setToken(newToken)
-      setUser(userData)
-      
-      localStorage.setItem('token', newToken)
-      localStorage.setItem('user', JSON.stringify(userData))
+      return success
     } catch (error) {
-      throw error
+      console.error('Login error:', error)
+      return false
+    } finally {
+      setLoading(false)
     }
   }
 
-  const logout = () => {
-    setUser(null)
-    setToken(null)
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
+  const register = async (name: string, email: string) => {
+    try {
+      setLoading(true)
+      const userData = await icpService.registerUser(name || null, email)
+      setUser(userData)
+    } catch (error) {
+      console.error('Registration error:', error)
+      throw error
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const logout = async () => {
+    try {
+      setLoading(true)
+      await icpService.logout()
+      setUser(null)
+      setPrincipal(null)
+      setIsAuthenticated(false)
+    } catch (error) {
+      console.error('Logout error:', error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   const value = {
     user,
-    token,
+    principal,
     login,
     register,
     logout,
-    loading
+    loading,
+    isAuthenticated
   }
 
   return (

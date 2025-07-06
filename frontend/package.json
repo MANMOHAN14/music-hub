@@ -13,8 +13,12 @@
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
     "framer-motion": "^11.15.0",
-    "axios": "^1.7.9",
-    "react-router-dom": "^6.28.0"
+    "react-router-dom": "^6.28.0",
+    "@dfinity/agent": "^2.1.2",
+    "@dfinity/candid": "^2.1.2",
+    "@dfinity/principal": "^2.1.2",
+    "@dfinity/auth-client": "^2.1.2",
+    "@dfinity/identity": "^2.1.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.17",
