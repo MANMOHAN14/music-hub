@@ -4,8 +4,6 @@ import { motion } from 'framer-motion'
 import { useAuth } from '../contexts/AuthContext'
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   
@@ -15,16 +13,19 @@ const Login: React.FC = () => {
   
   const from = location.state?.from?.pathname || '/dashboard'
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleLogin = async () => {
     setLoading(true)
     setError('')
 
     try {
-      await login(email, password)
-      navigate(from, { replace: true })
+      const success = await login()
+      if (success) {
+        navigate(from, { replace: true })
+      } else {
+        setError('Login failed. Please try again.')
+      }
     } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed')
+      setError(err.message || 'Login failed')
     } finally {
       setLoading(false)
     }
@@ -43,72 +44,42 @@ const Login: React.FC = () => {
             <span className="text-white font-bold text-lg">NT</span>
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Sign in to your account
+            Sign in with Internet Identity
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
-            <Link
-              to="/register"
-              className="font-medium text-primary-600 hover:text-primary-500"
-            >
-              create a new account
-            </Link>
+            Secure authentication powered by the Internet Computer
           </p>
         </div>
         
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+        <div className="mt-8 space-y-6">
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
               {error}
             </div>
           )}
           
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                className="input-field mt-1"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                className="input-field mt-1"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
-          </div>
-
           <div>
             <button
-              type="submit"
+              onClick={handleLogin}
               disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading ? 'Signing in...' : 'Sign in'}
+              {loading ? 'Connecting...' : 'Sign in with Internet Identity'}
             </button>
           </div>
-        </form>
+
+          <div className="text-center">
+            <p className="text-sm text-gray-600">
+              New to NFTune?{' '}
+              <Link
+                to="/register"
+                className="font-medium text-primary-600 hover:text-primary-500"
+              >
+                Create an account
+              </Link>
+            </p>
+          </div>
+        </div>
       </motion.div>
     </div>
   )
