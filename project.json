@@ -1,0 +1,18 @@
+{
+  "name": "NFTune",
+  "tagline": "One-liner summary of your project",
+  "description": "What it does, how it works, and the tech used.",
+  "team": [
+    {
+      "name": "Manmohan Singh",
+      "email": "manmohan197814@gmail.com"
+    },
+    {
+      "name": "Saikesh Pillai",
+      "email": "pillaisai2004@gmail.com"
+    }
+  ],
+  "demo_url": "https://example.com/demo",
+  "video_url": "https://youtube.com/watch?v=your-demo-video",
+  "technologies": ["React", "Ethers.js", "Polygon"]
+}
